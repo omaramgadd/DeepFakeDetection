@@ -30,7 +30,7 @@ def display_sample_images(data, data_dir, num_samples=10):
         img_path = os.path.join(data_dir, filepath)
         image = Image.open(img_path)
         axes[i].imshow(image)
-        axes[i].set_title(f"Label: {label}")
+        axes[i].set_title(label)
         axes[i].axis("off")
     plt.show()
 
@@ -58,7 +58,12 @@ def create_dataframe_from_directory(data_dir):
 
     return data
 
-def create_generators(train_data, val_data, test_data, batch_size=generator_batch):
+def create_generators(data, batch_size=generator_batch):
+
+    # Split the data
+    train_data, tmp_data = train_test_split(data, test_size=0.2, random_state=42)
+    test_data, val_data = train_test_split(tmp_data, test_size=0.5, random_state=42)
+
     datagen = ImageDataGenerator(
         rescale=1/255.0,
         featurewise_center=True,
@@ -169,35 +174,26 @@ def save_model(model, file_name):
 
 def main():
     
-    start_time = time.time()
-
     # Create dataframe
-    data = create_dataframe_from_directory(PATH)
-    
-    # Split the data
-    train_data, tmp_data = train_test_split(data, test_size=0.2, random_state=42)
-    test_data, val_data = train_test_split(tmp_data, test_size=0.5, random_state=42)
+    data_frame = create_dataframe_from_directory(PATH)
+
+    # Display images
+    display_sample_images(data_frame, PATH)
     
     # Create generators
-    train_generator, val_generator, test_generator = create_generators(train_data, val_data, test_data)
+    train_generator, val_generator, test_generator = create_generators(data_frame)
 
-    display_sample_images(data, PATH)
-    
     # Load model and weights
-    #model = create_model()
-    model = models.load_model('/content/drive/MyDrive/trained_models/model_epoch_03.h5')
+    model = create_model()
     
     # Train the model
-    #history = train_model(model, train_generator, val_generator)
+    history = train_model(model, train_generator, val_generator)
 
     # Evaluate the model
     evaluate_model(model, test_generator)
 
+    # Save the model
     save_model(model, "/content/drive/MyDrive/trained_models/efficientnetb4_model.h5")
-    
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(elapsed_time/60)
-    
+
 if __name__ == "__main__":
     main()
