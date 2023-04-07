@@ -7,9 +7,12 @@ This repository contains the source code for a deepfake detection system based o
 1. [Celeb-DF-v2](#celeb-df-v2)
 2. [Algorithms and Models](#algorithms-and-models)
 3. [File Structure](#file-structure)
-4. [Training](#training)
-5. [Testing and Results](#testing-and-results)
-6. [Usage](#usage)
+   - [frame_extraction.py](#frame_extractionpy)
+   - [face_detection.py](#face_detectionpy)
+   - [model.py](#modelpy)
+   - [predict.py](#predictpy)
+4. [Results](#results)
+5. [Usage](#usage)
 
 ## Celeb-DF-v2
 
@@ -65,6 +68,17 @@ This script contains the deep learning model for classification using the Effici
     - Saves the trained model to a specified file.
 <img width="526" alt="Screenshot 2023-04-05 at 3 45 35 PM" src="https://user-images.githubusercontent.com/57623082/230099698-da101110-e932-4d66-a560-3623ebc2df65.png">
 <img width="425" alt="Screenshot 2023-04-05 at 3 45 25 PM" src="https://user-images.githubusercontent.com/57623082/230099799-0457e81e-7bae-498e-9fbb-bc1c719efe82.png">
+
+### predict.py
+
+This script contains the code for loading a trained model and making predictions on a set of images located in a specified folder. It returns the overall label (either 'Real' or 'Fake') and the probability of that label.
+
+- Functions:
+  - `custom_preprocess_input(img_array)`
+    - Custom preprocessing function for input image arrays.
+  - `make_predictions(model_path, folder_path)`
+    - Loads the trained model and makes predictions on images located in the specified folder.
+    - Returns the overall label and probability.
 
 
 ## Results
