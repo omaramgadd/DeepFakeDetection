@@ -1,6 +1,9 @@
-# Graduation Project: Deepfake Detection using EfficientNet
+# Deepfake Detection with EfficientNet-B4
 
 This repository contains the source code for a deepfake detection system based on the EfficientNet architecture. The model is trained to classify images as real or fake using transfer learning. We used the Celeb-DF-v2 dataset for training and extracted approximately 250,000 frames from the videos. The project includes frame extraction, face detection, and the deep learning model for classification. The model has been pretrained on ImageNet and fine-tuned on the face dataset. The project was carried out using Google Colab.
+
+**Stack:** Python · TensorFlow/Keras · EfficientNet-B4 · OpenCV  
+**Pipeline:** video → frames → cropped faces → real/fake classification
 
 ## Table of Contents
 
@@ -55,7 +58,7 @@ This script contains the deep learning model for classification using the Effici
     - Displays sample images from dataset
   - `create_dataframe_from_directory(data_dir)`
     - Creates a DataFrame from the image files in a directory.
-  - `create_generators(train_data, val_data, test_data, batch_size=generator_batch)`
+  - `create_generators(data, batch_size=generator_batch)`
     - Splits the data into training, validation, and test sets.
     - Creates data generators for training, validation, and testing.
   - `create_model(input_shape=(244, 244, 3))`
@@ -85,15 +88,19 @@ This script contains the code for loading a trained model and making predictions
 
 <img width="913" alt="image" src="https://user-images.githubusercontent.com/57623082/230087882-c3993838-17f1-4278-9703-d8fb39e0fe81.png">
 
-After training the model on the extracted frames and evaluating it on the test set, we obtained impressive results, demonstrating the effectiveness of the EfficientNet architecture in deepfake detection tasks. The model was able to achieve the following performance metrics:
+The original project reported the following results on its held-out image/frame split. These figures have not been rerun as part of the documentation update:
 
 - Loss: 0.1
 - Accuracy: 99%
 - AUC: 99%
 
-These results shows that our deepfake detection system is highly effective and can be utilized for real-world applications.
+### Evaluation limitations
 
-The Model produces similar results to the adapted paper [Das et al., 2021].
+`model.py` randomly splits image rows into 80% training, 10% validation and 10% test sets. It does not group frames by their source video or identity. Related frames can therefore appear in multiple splits, making the reported scores potentially optimistic. These results should not be treated as video-independent benchmark performance or evidence of deployment readiness.
+
+A stronger follow-up evaluation would split by source video (and identity where applicable) before frame extraction, report ROC-AUC and precision/recall on unseen videos, and test cross-dataset generalisation.
+
+The project was inspired by the approach discussed in [Das et al., 2021]; direct metric comparisons require matching data and evaluation protocols.
 
 <img width="654" alt="Screenshot 2023-04-05 at 3 27 50 PM" src="https://user-images.githubusercontent.com/57623082/230096297-bbafb570-b6c3-41e3-b266-2c91e4cb8391.png">
 
